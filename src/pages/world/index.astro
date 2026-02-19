@@ -1,0 +1,80 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const entries = (await getCollection('world')).sort((a, b) => a.data.order - b.data.order);
+const base = import.meta.env.BASE_URL;
+const categories = [...new Set(entries.map(e => e.data.category))];
+---
+
+<BaseLayout title="世界观">
+  <div class="container world-page">
+    <h1>世界观</h1>
+    <div class="gold-line"></div>
+    <p class="world-desc">海图的边缘之外，是另一套规则。</p>
+
+    {categories.map(cat => (
+      <section class="cat-section">
+        <h2>{cat}</h2>
+        <div class="entry-grid">
+          {entries.filter(e => e.data.category === cat).map(entry => (
+            <a href={`${base}world/${entry.id.replace(/\.md$/, '')}/`} class="entry-card">
+              <h3>{entry.data.title}</h3>
+              <span class="entry-arrow">&rarr;</span>
+            </a>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<style>
+  .world-page {
+    padding: 3rem 1.5rem 4rem;
+    max-width: 900px;
+  }
+  .world-desc {
+    color: var(--text-muted);
+    margin: 0.5rem 0 2rem;
+  }
+  .cat-section {
+    margin-bottom: 2.5rem;
+  }
+  .cat-section h2 {
+    color: var(--gold);
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+  }
+  .entry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+  .entry-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: border-color 0.2s;
+    color: var(--text-heading);
+  }
+  .entry-card:hover {
+    border-color: var(--gold-dim);
+    color: var(--gold);
+  }
+  .entry-card h3 {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .entry-arrow {
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .entry-card:hover .entry-arrow {
+    color: var(--gold);
+  }
+</style>

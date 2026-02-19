@@ -1,0 +1,101 @@
+---
+interface Props {
+  id: string;
+  name: string;
+  role: string;
+  color: string;
+  image?: string;
+  brief: string;
+}
+
+const { id, name, role, color, image, brief } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<a href={`${base}characters/${id}/`} class="char-card" style={`--accent: ${color}`}>
+  <div class="char-img">
+    {image ? (
+      <img src={`${base}images/characters/${image}`} alt={name} loading="lazy" />
+    ) : (
+      <div class="char-placeholder">{name[0]}</div>
+    )}
+  </div>
+  <div class="char-info">
+    <h3 class="char-name">{name}</h3>
+    <p class="char-role">{role}</p>
+    <p class="char-brief">{brief}</p>
+  </div>
+  <div class="char-accent"></div>
+</a>
+
+<style>
+  .char-card {
+    display: block;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .char-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+  .char-img {
+    aspect-ratio: 3/4;
+    overflow: hidden;
+    background: var(--navy-light);
+  }
+  .char-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .char-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--accent);
+    opacity: 0.3;
+    font-weight: 700;
+  }
+  .char-info {
+    padding: 1rem;
+  }
+  .char-name {
+    font-size: 1.1rem;
+    color: var(--text-heading);
+  }
+  .char-role {
+    font-size: 0.8rem;
+    color: var(--accent);
+    margin-top: 0.2rem;
+  }
+  .char-brief {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .char-accent {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--accent);
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+  .char-card:hover .char-accent {
+    opacity: 1;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+interface ImageItem {
+  src: string;
+  alt: string;
+  category: string;
+}
+
+interface Props {
+  images: ImageItem[];
+}
+
+const { images } = Astro.props;
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="gallery-grid">
+  {images.map(img => (
+    <figure class="gallery-item">
+      <img src={`${base}images/${img.src}`} alt={img.alt} loading="lazy" />
+      <figcaption>
+        <span class="gallery-cat">{img.category}</span>
+        <span class="gallery-title">{img.alt}</span>
+      </figcaption>
+    </figure>
+  ))}
+</div>
+
+<style>
+  .gallery-grid {
+    columns: 3;
+    column-gap: 1rem;
+  }
+  .gallery-item {
+    break-inside: avoid;
+    margin-bottom: 1rem;
+    border-radius: 6px;
+    overflow: hidden;
+    position: relative;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+  }
+  .gallery-item img {
+    width: 100%;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .gallery-item:hover img {
+    transform: scale(1.03);
+  }
+  figcaption {
+    padding: 0.6rem 0.8rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+  }
+  .gallery-cat {
+    font-size: 0.7rem;
+    color: var(--gold-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+  .gallery-title {
+    font-size: 0.85rem;
+    color: var(--text);
+  }
+  @media (max-width: 1024px) {
+    .gallery-grid { columns: 2; }
+  }
+  @media (max-width: 640px) {
+    .gallery-grid { columns: 1; }
+  }
+</style>

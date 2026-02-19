@@ -1,0 +1,51 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer-inner">
+    <div class="footer-brand">
+      <span class="footer-title">海图之外</span>
+      <span class="footer-sub">BEYOND THE CHART</span>
+    </div>
+    <p class="footer-copy">&copy; {year} 海图之外. 版权所有.</p>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 2rem 0;
+    margin-top: 4rem;
+  }
+  .footer-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer-brand {
+    display: flex;
+    flex-direction: column;
+  }
+  .footer-title {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .footer-sub {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+  }
+  .footer-copy {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+  @media (max-width: 768px) {
+    .footer-inner {
+      flex-direction: column;
+      gap: 0.8rem;
+      text-align: center;
+    }
+  }
+</style>

@@ -1,0 +1,101 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+  const characters = await getCollection('characters');
+  return characters.map(char => ({
+    params: { id: char.id.replace(/\.md$/, '') },
+    props: { char },
+  }));
+}
+
+const { char } = Astro.props;
+const { Content } = await render(char);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={char.data.name}>
+  <div class="container char-detail">
+    <a href={`${base}characters/`} class="back-link">&larr; 返回角色一览</a>
+
+    <header class="char-header" style={`--accent: ${char.data.color}`}>
+      {char.data.image ? (
+        <img src={`${base}images/characters/${char.data.image}`} alt={char.data.name} class="char-portrait" />
+      ) : (
+        <div class="char-portrait-placeholder">{char.data.name[0]}</div>
+      )}
+      <div>
+        <h1>{char.data.name}</h1>
+        <p class="char-role">{char.data.role}</p>
+        <div class="gold-line"></div>
+      </div>
+    </header>
+
+    <div class="char-content">
+      <Content />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .char-detail {
+    max-width: var(--content-width);
+    padding: 2rem 1.5rem 4rem;
+  }
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .char-header {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+    margin: 2rem 0;
+  }
+  .char-portrait {
+    width: 160px;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid var(--accent);
+  }
+  .char-portrait-placeholder {
+    width: 160px;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    color: var(--accent);
+    background: var(--bg-card);
+    border-radius: 8px;
+    border: 2px solid var(--accent);
+    opacity: 0.5;
+    font-weight: 700;
+  }
+  .char-role {
+    color: var(--accent);
+    font-size: 0.95rem;
+    margin-top: 0.3rem;
+  }
+  .char-content {
+    line-height: 1.8;
+  }
+  .char-content :global(h2) {
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+  }
+  .char-content :global(p) {
+    margin-bottom: 0.8em;
+  }
+  .char-content :global(strong) {
+    color: var(--text-heading);
+  }
+  @media (max-width: 640px) {
+    .char-header {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+</style>

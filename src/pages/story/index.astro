@@ -1,0 +1,90 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allChapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+const v1 = allChapters.filter(c => c.data.volume === 1);
+const v2 = allChapters.filter(c => c.data.volume === 2);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="正文目录">
+  <div class="container story-index">
+    <h1>正文</h1>
+    <div class="gold-line"></div>
+
+    <section class="vol-section">
+      <h2>第一卷 · 空白海域</h2>
+      <p class="vol-desc">他们驶过了海图的边缘。在那片空白里，海水开始修正一切。</p>
+      <ol class="chapter-list">
+        {v1.map(ch => (
+          <li>
+            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
+              <span class="ch-num">第{String(ch.data.chapter).padStart(2, '0')}章</span>
+              <span class="ch-title">{ch.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    <section class="vol-section">
+      <h2>第二卷 · 铁锚风暴</h2>
+      <p class="vol-desc">铁锚港。规则比海水更冰冷的地方。</p>
+      <ol class="chapter-list">
+        {v2.map(ch => (
+          <li>
+            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
+              <span class="ch-num">第{String(ch.data.chapter).padStart(2, '0')}章</span>
+              <span class="ch-title">{ch.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .story-index {
+    padding: 3rem 1.5rem 4rem;
+    max-width: 800px;
+  }
+  .vol-section {
+    margin-top: 3rem;
+  }
+  .vol-section h2 {
+    color: var(--gold);
+  }
+  .vol-desc {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin: 0.5rem 0 1.5rem;
+  }
+  .chapter-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+  .chapter-list a {
+    display: flex;
+    gap: 1rem;
+    padding: 0.7rem 1rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+    color: var(--text);
+  }
+  .chapter-list a:hover {
+    background: var(--navy-lighter);
+    color: var(--text-heading);
+  }
+  .ch-num {
+    color: var(--text-muted);
+    min-width: 4em;
+    font-size: 0.9rem;
+  }
+  .ch-title {
+    font-size: 1rem;
+  }
+</style>

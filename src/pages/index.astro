@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import CharacterCard from '../components/CharacterCard.astro';
+import { getCollection } from 'astro:content';
+
+const characters = (await getCollection('characters')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="首页">
+  <HeroSection />
+
+  <section class="section container">
+    <h2>船员</h2>
+    <div class="gold-line"></div>
+    <p class="section-desc">灰鸥号上的七个人——和一只猫。</p>
+    <div class="char-grid">
+      {characters.map(c => (
+        <CharacterCard
+          id={c.id.replace(/\.md$/, '')}
+          name={c.data.name}
+          role={c.data.role}
+          color={c.data.color}
+          image={c.data.image}
+          brief={c.data.brief}
+        />
+      ))}
+    </div>
+  </section>
+
+  <section class="section container">
+    <h2>开始阅读</h2>
+    <div class="gold-line"></div>
+    <div class="vol-cards">
+      <a href={`${import.meta.env.BASE_URL}story/`} class="vol-card">
+        <span class="vol-num">第一卷</span>
+        <span class="vol-name">空白海域</span>
+        <span class="vol-info">20章</span>
+      </a>
+      <a href={`${import.meta.env.BASE_URL}story/`} class="vol-card">
+        <span class="vol-num">第二卷</span>
+        <span class="vol-name">铁锚风暴</span>
+        <span class="vol-info">16章</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding: 4rem 1.5rem;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+    margin-bottom: 2rem;
+  }
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+  }
+  .vol-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  .vol-card {
+    display: flex;
+    flex-direction: column;
+    padding: 2rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .vol-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+  .vol-num {
+    font-size: 0.8rem;
+    color: var(--gold-dim);
+    letter-spacing: 0.1em;
+  }
+  .vol-name {
+    font-size: 1.4rem;
+    color: var(--text-heading);
+    font-weight: 600;
+    margin-top: 0.3rem;
+  }
+  .vol-info {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-top: 0.5rem;
+  }
+</style>

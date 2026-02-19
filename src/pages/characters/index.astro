@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CharacterCard from '../../components/CharacterCard.astro';
+import { getCollection } from 'astro:content';
+
+const characters = (await getCollection('characters')).sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout title="角色">
+  <div class="container chars-page">
+    <h1>角色</h1>
+    <div class="gold-line"></div>
+    <p class="chars-desc">灰鸥号上的七个人——和一只猫。每个人都有自己上船的理由，每个人都有不想被看见的角落。</p>
+
+    <div class="char-grid">
+      {characters.map(c => (
+        <CharacterCard
+          id={c.id.replace(/\.md$/, '')}
+          name={c.data.name}
+          role={c.data.role}
+          color={c.data.color}
+          image={c.data.image}
+          brief={c.data.brief}
+        />
+      ))}
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .chars-page {
+    padding: 3rem 1.5rem 4rem;
+  }
+  .chars-desc {
+    color: var(--text-muted);
+    margin: 0.5rem 0 2rem;
+    max-width: 600px;
+  }
+  .char-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 1.5rem;
+  }
+</style>

@@ -1,0 +1,128 @@
+---
+import BaseLayout from './BaseLayout.astro';
+
+interface Props {
+  title: string;
+  volume: number;
+  chapter: number;
+  prevSlug?: string;
+  nextSlug?: string;
+  prevTitle?: string;
+  nextTitle?: string;
+}
+
+const { title, volume, chapter, prevSlug, nextSlug, prevTitle, nextTitle } = Astro.props;
+const base = import.meta.env.BASE_URL;
+const volName = volume === 1 ? '空白海域' : '铁锚风暴';
+---
+
+<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`}>
+  <article class="chapter-page container">
+    <header class="chapter-header">
+      <a href={`${base}story/`} class="back-link">&larr; 返回目录</a>
+      <p class="chapter-vol">第{volume}卷 · {volName}</p>
+      <h1>第{String(chapter).padStart(2, '0')}章 {title}</h1>
+      <div class="gold-line"></div>
+    </header>
+
+    <div class="chapter-body">
+      <slot />
+    </div>
+
+    <nav class="chapter-nav">
+      {prevSlug ? (
+        <a href={`${base}story/${prevSlug}/`} class="nav-prev">
+          <span class="nav-label">&larr; 上一章</span>
+          <span class="nav-title">{prevTitle}</span>
+        </a>
+      ) : <div />}
+      {nextSlug ? (
+        <a href={`${base}story/${nextSlug}/`} class="nav-next">
+          <span class="nav-label">下一章 &rarr;</span>
+          <span class="nav-title">{nextTitle}</span>
+        </a>
+      ) : <div />}
+    </nav>
+  </article>
+</BaseLayout>
+
+<style>
+  .chapter-page {
+    max-width: var(--content-width);
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+  .chapter-header {
+    margin-bottom: 2.5rem;
+    text-align: center;
+  }
+  .back-link {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+  }
+  .chapter-vol {
+    color: var(--gold-dim);
+    font-size: 0.9rem;
+    margin-top: 1rem;
+    letter-spacing: 0.1em;
+  }
+  .chapter-header h1 {
+    margin-top: 0.5rem;
+    font-size: 1.8rem;
+  }
+  .chapter-header .gold-line {
+    margin: 1rem auto;
+  }
+  .chapter-body {
+    font-size: 1.05rem;
+    line-height: 1.9;
+    color: var(--text);
+  }
+  .chapter-body :global(p) {
+    margin-bottom: 1em;
+    text-indent: 2em;
+  }
+  .chapter-body :global(hr) {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+  .chapter-nav {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
+    gap: 1rem;
+  }
+  .nav-prev, .nav-next {
+    display: flex;
+    flex-direction: column;
+    padding: 0.8rem 1.2rem;
+    border-radius: 6px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    transition: border-color 0.2s;
+    max-width: 45%;
+  }
+  .nav-prev:hover, .nav-next:hover {
+    border-color: var(--gold-dim);
+  }
+  .nav-next {
+    text-align: right;
+    margin-left: auto;
+  }
+  .nav-label {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+  }
+  .nav-title {
+    font-size: 0.95rem;
+    color: var(--text-heading);
+    margin-top: 0.2rem;
+  }
+  @media (max-width: 768px) {
+    .chapter-body { font-size: 1rem; line-height: 1.85; }
+    .chapter-header h1 { font-size: 1.4rem; }
+  }
+</style>

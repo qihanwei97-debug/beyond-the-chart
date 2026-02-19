@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import GalleryGrid from '../components/GalleryGrid.astro';
+
+const images = [
+  { src: 'props/P01_罗盘_定稿.jpg', alt: '罗盘', category: '道具' },
+  { src: 'characters/C01_索尔_定稿锐利版.jpg', alt: '索尔', category: '角色' },
+  { src: 'scenes/S01_均一化海面.jpg', alt: '均一化海面', category: '场景' },
+  { src: 'scenes/S02_水下光面.jpg', alt: '水下光面', category: '场景' },
+  { src: 'characters/C10_凯尔_半身正面_定稿.jpg', alt: '凯尔', category: '角色' },
+  { src: 'combinations/G01_凯尔Sol罗盘_月光甲板_定稿.jpg', alt: '月光甲板', category: '组合' },
+  { src: 'scenes/S04_空船沉没.jpg', alt: '空船沉没', category: '场景' },
+  { src: 'brand/B01_罗盘星Logo.jpg', alt: '罗盘星Logo', category: '品牌' },
+  { src: 'props/P03_灰鸥号_侧面基准.jpg', alt: '灰鸥号', category: '道具' },
+  { src: 'characters/C12_奈娅_半身正面_定稿.jpg', alt: '奈娅', category: '角色' },
+  { src: 'characters/C14_科文_半身正面_定稿.jpg', alt: '科文', category: '角色' },
+  { src: 'scenes/S05_铁齿礁港湾.jpg', alt: '铁齿礁港湾', category: '场景' },
+  { src: 'scenes/S06_铁锚港.jpg', alt: '铁锚港', category: '场景' },
+  { src: 'characters/C26_凯尔_船头剪影_定稿.jpg', alt: '凯尔船头剪影', category: '角色' },
+  { src: 'brand/B03_海报A_不完美才能活.png', alt: '海报·不完美才能活', category: '品牌' },
+  { src: 'brand/B04_海报B_二十三个人.jpeg', alt: '海报·二十三个人', category: '品牌' },
+  { src: 'scenes/S09_塞沃尼亚港口_定稿.jpg', alt: '塞沃尼亚港口', category: '场景' },
+  { src: 'scenes/S10_寒渊冰海_定稿.jpg', alt: '寒渊冰海', category: '场景' },
+  { src: 'scenes/S11_卡拉恩群岛船_定稿.jpg', alt: '卡拉恩群岛', category: '场景' },
+  { src: 'characters/C08_索尔_挡路L4.jpg', alt: '索尔挡路', category: '角色' },
+];
+---
+
+<BaseLayout title="视觉画廊">
+  <div class="container gallery-page">
+    <h1>视觉画廊</h1>
+    <div class="gold-line"></div>
+    <p class="gallery-desc">《海图之外》的世界，一帧一帧。</p>
+
+    <GalleryGrid images={images} />
+
+    <p class="gallery-note">更多视觉资产持续更新中。</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .gallery-page {
+    padding: 3rem 1.5rem 4rem;
+  }
+  .gallery-desc {
+    color: var(--text-muted);
+    margin: 0.5rem 0 2rem;
+  }
+  .gallery-note {
+    text-align: center;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin-top: 3rem;
+  }
+</style>

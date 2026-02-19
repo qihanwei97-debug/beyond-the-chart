@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="关于">
+  <div class="container about-page">
+    <h1>关于《海图之外》</h1>
+    <div class="gold-line"></div>
+
+    <section class="about-section">
+      <h2>故事</h2>
+      <p>这是一个关于驶入未知的故事。</p>
+      <p>在这个世界里，海图有边缘。边缘之外是空白——不是没有被探索，而是探索过的人没有回来。凯尔和灰鸥号的船员们选择驶入那片空白。他们发现，在海图标记终止的地方，海水开始按照另一套规则运行。</p>
+      <p>七片异常海域，七种扭曲现实的方式。均一化海域抹平差异，裂隙海碎裂空间，回旋涡搅乱时间……每一片海域都是一道关于人性的考题。</p>
+    </section>
+
+    <section class="about-section">
+      <h2>调性</h2>
+      <div class="tone-grid">
+        <div class="tone-item">
+          <span class="tone-word">敬畏</span>
+          <p>面对远超理解的力量时，不是恐惧，是承认渺小后仍然前行。</p>
+        </div>
+        <div class="tone-item">
+          <span class="tone-word">向往</span>
+          <p>"我想看看那边有什么。"推动一切的最朴素动机。</p>
+        </div>
+        <div class="tone-item">
+          <span class="tone-word">孤独</span>
+          <p>海图之外没有港口。每一个选择都意味着更远离已知世界。</p>
+        </div>
+        <div class="tone-item">
+          <span class="tone-word">求知</span>
+          <p>记录、理解、命名。用理性面对非理性。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>结构</h2>
+      <p>全书规划七篇十六卷，对应七片异常海域。当前已完成前两卷：</p>
+      <ul class="vol-list">
+        <li><strong>第一卷 · 空白海域</strong>（20章）— 灰鸥号首次驶入均一化海域的边缘</li>
+        <li><strong>第二卷 · 铁锚风暴</strong>（16章）— 返回文明世界后面对的制度风暴</li>
+        <li><strong>第三卷 · 修正之渡</strong>（筹备中）— 被迫重返均一化海域的核心</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>联系</h2>
+      <p>这个项目正在持续创作中。如果你感兴趣，可以从<a href={`${import.meta.env.BASE_URL}story/`}>第一章</a>开始阅读。</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page {
+    max-width: var(--content-width);
+    padding: 3rem 1.5rem 4rem;
+  }
+  .about-section {
+    margin-top: 2.5rem;
+  }
+  .about-section h2 {
+    color: var(--gold);
+    font-size: 1.2rem;
+    margin-bottom: 0.8rem;
+  }
+  .about-section p {
+    margin-bottom: 0.8em;
+    line-height: 1.8;
+  }
+  .tone-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.2rem;
+    margin-top: 0.5rem;
+  }
+  .tone-item {
+    padding: 1rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+  }
+  .tone-word {
+    display: block;
+    color: var(--gold);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+  }
+  .tone-item p {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .vol-list {
+    list-style: none;
+    margin-top: 0.5rem;
+  }
+  .vol-list li {
+    padding: 0.4rem 0;
+    padding-left: 1.2rem;
+    position: relative;
+  }
+  .vol-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+  .vol-list strong {
+    color: var(--text-heading);
+  }
+  @media (max-width: 640px) {
+    .tone-grid { grid-template-columns: 1fr; }
+  }
+</style>
