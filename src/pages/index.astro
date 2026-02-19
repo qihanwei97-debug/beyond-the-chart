@@ -5,6 +5,8 @@ import CharacterCard from '../components/CharacterCard.astro';
 import { getCollection } from 'astro:content';
 
 const characters = (await getCollection('characters')).sort((a, b) => a.data.order - b.data.order);
+const featured = characters.slice(0, 4);
+const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout title="首页">
@@ -15,7 +17,7 @@ const characters = (await getCollection('characters')).sort((a, b) => a.data.ord
     <div class="gold-line"></div>
     <p class="section-desc">灰鸥号上的七个人——和一只猫。</p>
     <div class="char-grid">
-      {characters.map(c => (
+      {featured.map(c => (
         <CharacterCard
           id={c.id.replace(/\.md$/, '')}
           name={c.data.name}
@@ -26,22 +28,25 @@ const characters = (await getCollection('characters')).sort((a, b) => a.data.ord
         />
       ))}
     </div>
+    <div class="view-all">
+      <a href={`${base}characters/`} class="btn-outline">查看全部角色</a>
+    </div>
   </section>
 
   <section class="section container">
     <h2>开始阅读</h2>
     <div class="gold-line"></div>
     <div class="vol-cards">
-      <a href={`${import.meta.env.BASE_URL}story/`} class="vol-card">
+      <a href={`${base}story/`} class="vol-card">
         <span class="vol-num">第一卷</span>
         <span class="vol-name">空白海域</span>
-        <span class="vol-info">20章</span>
+        <span class="vol-info">20章 · 已完结</span>
       </a>
-      <a href={`${import.meta.env.BASE_URL}story/`} class="vol-card">
+      <div class="vol-card vol-card--coming">
         <span class="vol-num">第二卷</span>
         <span class="vol-name">铁锚风暴</span>
-        <span class="vol-info">16章</span>
-      </a>
+        <span class="vol-info">即将上线</span>
+      </div>
     </div>
   </section>
 </BaseLayout>
@@ -59,6 +64,23 @@ const characters = (await getCollection('characters')).sort((a, b) => a.data.ord
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
     gap: 1.5rem;
+  }
+  .view-all {
+    text-align: center;
+    margin-top: 2rem;
+  }
+  .btn-outline {
+    display: inline-block;
+    padding: 0.6rem 2rem;
+    border: 1px solid var(--gold-dim);
+    border-radius: 4px;
+    color: var(--gold);
+    font-size: 0.9rem;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-outline:hover {
+    background: var(--gold);
+    color: var(--bg);
   }
   .vol-cards {
     display: grid;
@@ -78,6 +100,15 @@ const characters = (await getCollection('characters')).sort((a, b) => a.data.ord
   .vol-card:hover {
     border-color: var(--gold-dim);
     transform: translateY(-2px);
+  }
+  .vol-card--coming {
+    opacity: 0.5;
+    border-style: dashed;
+    cursor: default;
+  }
+  .vol-card--coming:hover {
+    border-color: var(--border);
+    transform: none;
   }
   .vol-num {
     font-size: 0.8rem;
