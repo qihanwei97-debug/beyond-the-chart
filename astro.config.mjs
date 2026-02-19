@@ -2,7 +2,7 @@
 import { defineConfig } from 'astro/config';
 
 export default defineConfig({
-  site: 'https://qihanwei97-debug.github.io',
-  base: '/beyond-the-chart/',
+  site: 'https://beyond-the-chart.com',
+  base: '/',
   output: 'static',
 });
