@@ -29,6 +29,7 @@ const world = defineCollection({
     title: z.string(),
     category: z.string(),
     order: z.number(),
+    image: z.string().optional(),
   }),
 });
 

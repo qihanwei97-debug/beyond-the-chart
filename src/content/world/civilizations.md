@@ -2,7 +2,7 @@
 title: "四大文明"
 category: "世界观"
 order: 5
-image: "scenes/S09_塞沃尼亚港口_定稿.jpg"
+image: "scenes/S06_铁锚港.jpg"
 ---
 
 ## 奥尔登 —— 旧秩序大陆
