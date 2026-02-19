@@ -1,0 +1,185 @@
+---
+/**
+ * BGM播放器 — 浮动在页面右下角
+ * 首次访问默认静音，用户点击后开始播放并记住偏好
+ * 阅读页面不显示（由layout传入enableBgm控制）
+ */
+const base = import.meta.env.BASE_URL;
+---
+
+<div class="bgm-player" id="bgm-player" title="背景音乐">
+  <button class="bgm-btn" id="bgm-btn" aria-label="背景音乐开关">
+    <svg class="bgm-icon bgm-icon--off" id="bgm-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <line x1="23" y1="9" x2="17" y2="15"/>
+      <line x1="17" y1="9" x2="23" y2="15"/>
+    </svg>
+    <svg class="bgm-icon bgm-icon--on" id="bgm-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none">
+      <path d="M11 5L6 9H2v6h4l5 4V5z"/>
+      <path d="M19.07 4.93a10 10 0 010 14.14"/>
+      <path d="M15.54 8.46a5 5 0 010 7.07"/>
+    </svg>
+  </button>
+  <div class="bgm-waves" id="bgm-waves">
+    <span></span><span></span><span></span><span></span>
+  </div>
+</div>
+
+<audio id="bgm-audio" loop preload="none">
+  <source src={`${base}audio/bgm.mp3`} type="audio/mpeg" />
+</audio>
+
+<style>
+  .bgm-player {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(10, 22, 40, 0.85);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 0.5rem 0.8rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    cursor: pointer;
+  }
+  .bgm-player:hover {
+    border-color: var(--gold-dim);
+    box-shadow: 0 0 20px rgba(200, 164, 92, 0.1);
+  }
+  .bgm-player.playing {
+    border-color: rgba(200, 164, 92, 0.3);
+  }
+
+  .bgm-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    color: var(--text-muted);
+    transition: color 0.2s;
+  }
+  .bgm-btn:hover {
+    color: var(--gold);
+  }
+  .bgm-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* 音波动画 */
+  .bgm-waves {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 18px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .bgm-player.playing .bgm-waves {
+    opacity: 1;
+  }
+  .bgm-waves span {
+    display: block;
+    width: 3px;
+    background: var(--gold);
+    border-radius: 1px;
+    height: 4px;
+    opacity: 0.6;
+  }
+  .bgm-player.playing .bgm-waves span {
+    animation: wave 1.2s ease-in-out infinite;
+  }
+  .bgm-player.playing .bgm-waves span:nth-child(1) { animation-delay: 0s; }
+  .bgm-player.playing .bgm-waves span:nth-child(2) { animation-delay: 0.2s; }
+  .bgm-player.playing .bgm-waves span:nth-child(3) { animation-delay: 0.4s; }
+  .bgm-player.playing .bgm-waves span:nth-child(4) { animation-delay: 0.1s; }
+
+  @keyframes wave {
+    0%, 100% { height: 4px; }
+    50% { height: 16px; }
+  }
+
+  @media (max-width: 768px) {
+    .bgm-player {
+      bottom: 1rem;
+      right: 1rem;
+      padding: 0.4rem 0.6rem;
+    }
+  }
+</style>
+
+<script>
+  const audio = document.getElementById('bgm-audio') as HTMLAudioElement;
+  const player = document.getElementById('bgm-player')!;
+  const btn = document.getElementById('bgm-btn')!;
+  const iconOff = document.getElementById('bgm-off')!;
+  const iconOn = document.getElementById('bgm-on')!;
+
+  // 低音量，作为氛围背景
+  audio.volume = 0.15;
+
+  let isPlaying = false;
+
+  // 读取用户偏好
+  const pref = localStorage.getItem('bgm-pref');
+
+  function play() {
+    audio.play().then(() => {
+      isPlaying = true;
+      player.classList.add('playing');
+      iconOff.style.display = 'none';
+      iconOn.style.display = 'block';
+      localStorage.setItem('bgm-pref', 'on');
+    }).catch(() => {
+      // 浏览器阻止自动播放，等待用户交互
+    });
+  }
+
+  function pause() {
+    audio.pause();
+    isPlaying = false;
+    player.classList.remove('playing');
+    iconOff.style.display = 'block';
+    iconOn.style.display = 'none';
+    localStorage.setItem('bgm-pref', 'off');
+  }
+
+  function toggle() {
+    if (isPlaying) {
+      pause();
+    } else {
+      play();
+    }
+  }
+
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
+  player.addEventListener('click', toggle);
+
+  // 如果用户之前选择了播放，尝试自动播放
+  if (pref === 'on') {
+    // 需要等待用户交互才能自动播放
+    const tryAutoplay = () => {
+      play();
+      document.removeEventListener('click', tryAutoplay);
+      document.removeEventListener('keydown', tryAutoplay);
+      document.removeEventListener('scroll', tryAutoplay);
+    };
+    document.addEventListener('click', tryAutoplay, { once: false });
+    document.addEventListener('keydown', tryAutoplay, { once: false });
+    document.addEventListener('scroll', tryAutoplay, { once: false });
+    // 也直接尝试一次（某些浏览器允许）
+    play();
+  }
+</script>

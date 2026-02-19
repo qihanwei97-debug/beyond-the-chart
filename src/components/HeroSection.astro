@@ -4,22 +4,26 @@ const base = import.meta.env.BASE_URL;
 
 <section class="hero">
   <div class="hero-bg"></div>
+  <div class="hero-particles" id="hero-particles"></div>
   <div class="hero-content container">
-    <p class="hero-en">BEYOND THE CHART</p>
-    <h1 class="hero-title">海图之外</h1>
-    <div class="gold-line" style="margin: 1rem auto;"></div>
-    <p class="hero-tagline">他们驶入了海图上没有标记的海域。<br/>在那里，海水会抹去一切不完美的事物。</p>
-    <div class="hero-actions">
+    <p class="hero-en animate-fade" style="--delay: 0s">BEYOND THE CHART</p>
+    <h1 class="hero-title animate-fade" style="--delay: 0.3s">海图之外</h1>
+    <div class="gold-line animate-fade" style="margin: 1rem auto; --delay: 0.5s"></div>
+    <p class="hero-tagline animate-fade" style="--delay: 0.7s">他们驶入了海图上没有标记的海域。<br/>在那里，海水会抹去一切不完美的事物。</p>
+    <div class="hero-actions animate-fade" style="--delay: 1s">
       <a href={`${base}story/`} class="btn-primary">开始阅读</a>
       <a href={`${base}about/`} class="btn-secondary">了解更多</a>
     </div>
+  </div>
+  <div class="hero-scroll-hint animate-fade" style="--delay: 1.5s">
+    <span class="scroll-arrow"></span>
   </div>
 </section>
 
 <style>
   .hero {
     position: relative;
-    min-height: 80vh;
+    min-height: 90vh;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -29,13 +33,38 @@ const base = import.meta.env.BASE_URL;
   .hero-bg {
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 50% 80%, #0d2240 0%, var(--bg) 70%);
+    background:
+      radial-gradient(ellipse at 50% 80%, rgba(13, 34, 64, 0.8) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 50%, rgba(200, 164, 92, 0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 30%, rgba(200, 164, 92, 0.02) 0%, transparent 50%),
+      var(--bg);
     z-index: 0;
+  }
+  .hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
   }
   .hero-content {
     position: relative;
-    z-index: 1;
+    z-index: 2;
   }
+
+  /* 淡入动画 */
+  .animate-fade {
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeUp 0.8s ease-out forwards;
+    animation-delay: var(--delay, 0s);
+  }
+  @keyframes fadeUp {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
   .hero-en {
     font-size: 0.85rem;
     color: var(--gold-dim);
@@ -43,10 +72,11 @@ const base = import.meta.env.BASE_URL;
     margin-bottom: 0.5rem;
   }
   .hero-title {
-    font-size: 3.5rem;
+    font-size: 3.8rem;
     font-weight: 700;
     color: var(--text-heading);
     letter-spacing: 0.15em;
+    text-shadow: 0 0 40px rgba(200, 164, 92, 0.15);
   }
   .hero-tagline {
     font-size: 1.1rem;
@@ -69,25 +99,89 @@ const base = import.meta.env.BASE_URL;
     color: var(--navy);
     font-weight: 600;
     border-radius: 4px;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
   }
   .btn-primary:hover {
     background: var(--gold-bright);
     color: var(--navy);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 20px rgba(200, 164, 92, 0.3);
   }
   .btn-secondary {
     padding: 0.7rem 2rem;
     border: 1px solid var(--gold-dim);
     color: var(--gold);
     border-radius: 4px;
-    transition: background 0.2s;
+    transition: background 0.2s, transform 0.2s;
   }
   .btn-secondary:hover {
     background: rgba(200, 164, 92, 0.1);
+    transform: translateY(-1px);
   }
+
+  /* 向下滚动提示 */
+  .hero-scroll-hint {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 2;
+  }
+  .scroll-arrow {
+    display: block;
+    width: 20px;
+    height: 20px;
+    border-right: 2px solid var(--gold-dim);
+    border-bottom: 2px solid var(--gold-dim);
+    transform: rotate(45deg);
+    opacity: 0.4;
+    animation: scrollBounce 2s ease-in-out infinite;
+  }
+  @keyframes scrollBounce {
+    0%, 100% { transform: rotate(45deg) translateY(0); opacity: 0.4; }
+    50% { transform: rotate(45deg) translateY(6px); opacity: 0.7; }
+  }
+
   @media (max-width: 768px) {
-    .hero { min-height: 60vh; }
-    .hero-title { font-size: 2.2rem; }
+    .hero { min-height: 70vh; }
+    .hero-title { font-size: 2.4rem; }
     .hero-tagline { font-size: 0.95rem; }
+  }
+</style>
+
+<script>
+  // 微粒效果 — 漂浮的金色光点模拟海面微光
+  const canvas = document.getElementById('hero-particles') as HTMLElement;
+  if (canvas) {
+    const count = 25;
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement('div');
+      const size = Math.random() * 3 + 1;
+      const x = Math.random() * 100;
+      const y = Math.random() * 100;
+      const duration = Math.random() * 8 + 6;
+      const delay = Math.random() * 5;
+      dot.style.cssText = `
+        position: absolute;
+        width: ${size}px;
+        height: ${size}px;
+        background: rgba(200, 164, 92, ${Math.random() * 0.3 + 0.1});
+        border-radius: 50%;
+        left: ${x}%;
+        top: ${y}%;
+        animation: particleFloat ${duration}s ease-in-out ${delay}s infinite;
+        pointer-events: none;
+      `;
+      canvas.appendChild(dot);
+    }
+  }
+</script>
+
+<style is:global>
+  @keyframes particleFloat {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    25% { transform: translate(10px, -15px); opacity: 0.6; }
+    50% { transform: translate(-5px, -25px); opacity: 0.4; }
+    75% { transform: translate(15px, -10px); opacity: 0.7; }
   }
 </style>

@@ -12,7 +12,9 @@ const base = import.meta.env.BASE_URL;
 <BaseLayout title="首页">
   <HeroSection />
 
-  <section class="section container">
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
     <h2>船员</h2>
     <div class="gold-line"></div>
     <p class="section-desc">灰鸥号上的七个人——和一只猫。</p>
@@ -33,7 +35,9 @@ const base = import.meta.env.BASE_URL;
     </div>
   </section>
 
-  <section class="section container">
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
     <h2>开始阅读</h2>
     <div class="gold-line"></div>
     <div class="vol-cards">
@@ -41,6 +45,7 @@ const base = import.meta.env.BASE_URL;
         <span class="vol-num">第一卷</span>
         <span class="vol-name">空白海域</span>
         <span class="vol-info">20章 · 已完结</span>
+        <span class="vol-arrow">→</span>
       </a>
       <div class="vol-card vol-card--coming">
         <span class="vol-num">第二卷</span>
@@ -49,7 +54,43 @@ const base = import.meta.env.BASE_URL;
       </div>
     </div>
   </section>
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
+    <h2>探索世界</h2>
+    <div class="gold-line"></div>
+    <p class="section-desc">海图画的不是海洋。海图画的是人类敢走的路。</p>
+    <div class="explore-links">
+      <a href={`${base}world/`} class="explore-card">
+        <span class="explore-icon">⚓</span>
+        <span class="explore-label">世界观</span>
+      </a>
+      <a href={`${base}gallery/`} class="explore-card">
+        <span class="explore-icon">🎨</span>
+        <span class="explore-label">画廊</span>
+      </a>
+      <a href={`${base}videos/`} class="explore-card">
+        <span class="explore-icon">🎬</span>
+        <span class="explore-label">视频</span>
+      </a>
+    </div>
+  </section>
 </BaseLayout>
+
+<script>
+  // 滚动渐入
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
 
 <style>
   .section {
@@ -59,6 +100,7 @@ const base = import.meta.env.BASE_URL;
     color: var(--text-muted);
     margin-top: 0.5rem;
     margin-bottom: 2rem;
+    font-style: italic;
   }
   .char-grid {
     display: grid;
@@ -76,11 +118,13 @@ const base = import.meta.env.BASE_URL;
     border-radius: 4px;
     color: var(--gold);
     font-size: 0.9rem;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s;
   }
   .btn-outline:hover {
     background: var(--gold);
     color: var(--bg);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 16px rgba(200, 164, 92, 0.2);
   }
   .vol-cards {
     display: grid;
@@ -95,11 +139,28 @@ const base = import.meta.env.BASE_URL;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 8px;
-    transition: border-color 0.2s, transform 0.2s;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .vol-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold-dim), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .vol-card:hover::before {
+    opacity: 1;
   }
   .vol-card:hover {
     border-color: var(--gold-dim);
-    transform: translateY(-2px);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
   }
   .vol-card--coming {
     opacity: 0.5;
@@ -109,6 +170,10 @@ const base = import.meta.env.BASE_URL;
   .vol-card--coming:hover {
     border-color: var(--border);
     transform: none;
+    box-shadow: none;
+  }
+  .vol-card--coming:hover::before {
+    opacity: 0;
   }
   .vol-num {
     font-size: 0.8rem;
@@ -125,5 +190,58 @@ const base = import.meta.env.BASE_URL;
     font-size: 0.85rem;
     color: var(--text-muted);
     margin-top: 0.5rem;
+  }
+  .vol-arrow {
+    position: absolute;
+    right: 1.5rem;
+    top: 50%;
+    transform: translateY(-50%) translateX(0);
+    font-size: 1.2rem;
+    color: var(--gold-dim);
+    opacity: 0;
+    transition: opacity 0.3s, transform 0.3s;
+  }
+  .vol-card:hover .vol-arrow {
+    opacity: 1;
+    transform: translateY(-50%) translateX(4px);
+  }
+
+  /* 探索世界区块 */
+  .explore-links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .explore-card {
+    flex: 1;
+    min-width: 140px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.8rem;
+    padding: 2rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  }
+  .explore-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+  .explore-icon {
+    font-size: 2rem;
+    filter: grayscale(0.5);
+    transition: filter 0.3s;
+  }
+  .explore-card:hover .explore-icon {
+    filter: grayscale(0);
+  }
+  .explore-label {
+    color: var(--text-heading);
+    font-size: 1rem;
+    font-weight: 600;
   }
 </style>

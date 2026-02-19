@@ -16,7 +16,7 @@ const base = import.meta.env.BASE_URL;
 const volName = volume === 1 ? '空白海域' : '铁锚风暴';
 ---
 
-<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`}>
+<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`} enableBgm={false}>
   <article class="chapter-page container">
     <header class="chapter-header">
       <a href={`${base}story/`} class="back-link">&larr; 返回目录</a>
