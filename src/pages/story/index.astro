@@ -3,8 +3,6 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const allChapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
-const v1 = allChapters.filter(c => c.data.volume === 1);
-const v2 = allChapters.filter(c => c.data.volume === 2);
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -17,7 +15,7 @@ const base = import.meta.env.BASE_URL;
       <h2>第一卷 · 空白海域</h2>
       <p class="vol-desc">他们驶过了海图的边缘。在那片空白里，海水开始修正一切。</p>
       <ol class="chapter-list">
-        {v1.map(ch => (
+        {allChapters.map(ch => (
           <li>
             <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
               <span class="ch-num">第{String(ch.data.chapter).padStart(2, '0')}章</span>
@@ -26,21 +24,7 @@ const base = import.meta.env.BASE_URL;
           </li>
         ))}
       </ol>
-    </section>
-
-    <section class="vol-section">
-      <h2>第二卷 · 铁锚风暴</h2>
-      <p class="vol-desc">铁锚港。规则比海水更冰冷的地方。</p>
-      <ol class="chapter-list">
-        {v2.map(ch => (
-          <li>
-            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
-              <span class="ch-num">第{String(ch.data.chapter).padStart(2, '0')}章</span>
-              <span class="ch-title">{ch.data.title}</span>
-            </a>
-          </li>
-        ))}
-      </ol>
+      <p class="coming-soon">第二卷即将上线。</p>
     </section>
   </div>
 </BaseLayout>
@@ -86,5 +70,14 @@ const base = import.meta.env.BASE_URL;
   }
   .ch-title {
     font-size: 1rem;
+  }
+  .coming-soon {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    text-align: center;
   }
 </style>
