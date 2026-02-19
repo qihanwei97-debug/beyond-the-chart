@@ -2,6 +2,7 @@
 title: "均一化海域"
 category: "异常海域"
 order: 1
+image: "scenes/S01_均一化海面.jpg"
 ---
 
 ## 海图边缘之外

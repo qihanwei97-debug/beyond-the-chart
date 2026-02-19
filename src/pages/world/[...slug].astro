@@ -16,11 +16,28 @@ const base = import.meta.env.BASE_URL;
 ---
 
 <BaseLayout title={entry.data.title}>
+  {entry.data.image && (
+    <div class="world-banner">
+      <img src={`${base}images/${entry.data.image}`} alt={entry.data.title} />
+      <div class="world-banner-overlay"></div>
+      <div class="world-banner-text container">
+        <span class="cat-badge">{entry.data.category}</span>
+        <h1>{entry.data.title}</h1>
+      </div>
+    </div>
+  )}
+
   <div class="container world-detail">
     <a href={`${base}world/`} class="back-link">&larr; 返回世界观</a>
-    <span class="cat-badge">{entry.data.category}</span>
-    <h1>{entry.data.title}</h1>
-    <div class="gold-line"></div>
+
+    {!entry.data.image && (
+      <div class="no-banner-header">
+        <span class="cat-badge">{entry.data.category}</span>
+        <h1>{entry.data.title}</h1>
+        <div class="gold-line"></div>
+      </div>
+    )}
+
     <div class="world-content">
       <Content />
     </div>
@@ -28,39 +45,93 @@ const base = import.meta.env.BASE_URL;
 </BaseLayout>
 
 <style>
+  /* Banner 大图 */
+  .world-banner {
+    position: relative;
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+  }
+  .world-banner img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 40%;
+  }
+  .world-banner-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top,
+      var(--bg) 0%,
+      rgba(6, 14, 26, 0.6) 40%,
+      rgba(6, 14, 26, 0.3) 100%
+    );
+    pointer-events: none;
+  }
+  .world-banner-text {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding-bottom: 2rem;
+  }
+  .world-banner-text h1 {
+    margin-top: 0.5rem;
+    font-size: 2rem;
+    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  /* 详情区 */
   .world-detail {
     max-width: var(--content-width);
-    padding: 2rem 1.5rem 4rem;
+    padding: 1.5rem 1.5rem 4rem;
   }
   .back-link {
+    display: inline-block;
     font-size: 0.85rem;
     color: var(--text-muted);
+    margin-bottom: 1rem;
+    transition: color 0.2s;
+  }
+  .back-link:hover {
+    color: var(--gold);
   }
   .cat-badge {
     display: inline-block;
-    margin-top: 1.5rem;
     padding: 0.2rem 0.8rem;
     font-size: 0.75rem;
     color: var(--gold);
     border: 1px solid var(--gold-dim);
     border-radius: 3px;
+    background: rgba(200, 164, 92, 0.08);
   }
-  .world-detail h1 {
+  .no-banner-header {
+    margin-top: 0.5rem;
+  }
+  .no-banner-header h1 {
     margin-top: 0.8rem;
   }
+
+  /* 正文内容 */
   .world-content {
     line-height: 1.8;
-    margin-top: 1rem;
+    margin-top: 1.5rem;
   }
   .world-content :global(h2) {
-    margin-top: 2rem;
+    margin-top: 2.5rem;
     margin-bottom: 0.5rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--border);
   }
   .world-content :global(p) {
     margin-bottom: 0.8em;
   }
   .world-content :global(strong) {
     color: var(--text-heading);
+  }
+  .world-content :global(em) {
+    color: var(--gold-dim);
+    font-style: italic;
   }
   .world-content :global(table) {
     width: 100%;
@@ -77,5 +148,14 @@ const base = import.meta.env.BASE_URL;
     background: var(--navy-lighter);
     color: var(--gold);
     font-size: 0.9rem;
+  }
+
+  @media (max-width: 768px) {
+    .world-banner {
+      height: 220px;
+    }
+    .world-banner-text h1 {
+      font-size: 1.5rem;
+    }
   }
 </style>

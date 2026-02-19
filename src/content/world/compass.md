@@ -2,6 +2,7 @@
 title: "罗盘"
 category: "核心道具"
 order: 2
+image: "props/P01_罗盘_定稿.jpg"
 ---
 
 ## 比凯尔老得多的东西

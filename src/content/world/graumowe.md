@@ -2,6 +2,7 @@
 title: "灰鸥号"
 category: "核心道具"
 order: 3
+image: "props/P03_灰鸥号_侧面基准.jpg"
 ---
 
 ## 不大，不新，不快

@@ -2,6 +2,7 @@
 title: "海图之外"
 category: "世界观"
 order: 4
+image: "scenes/S02_水下光面.jpg"
 ---
 
 ## 航路是一张网

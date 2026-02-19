@@ -8,19 +8,27 @@ const categories = [...new Set(entries.map(e => e.data.category))];
 ---
 
 <BaseLayout title="世界观">
-  <div class="container world-page">
+  <div class="container world-page scroll-reveal">
     <h1>世界观</h1>
     <div class="gold-line"></div>
     <p class="world-desc">海图的边缘之外，是另一套规则。</p>
 
     {categories.map(cat => (
       <section class="cat-section">
-        <h2>{cat}</h2>
+        <h2 class="cat-title">{cat}</h2>
         <div class="entry-grid">
           {entries.filter(e => e.data.category === cat).map(entry => (
             <a href={`${base}world/${entry.id.replace(/\.md$/, '')}/`} class="entry-card">
-              <h3>{entry.data.title}</h3>
-              <span class="entry-arrow">&rarr;</span>
+              {entry.data.image && (
+                <div class="entry-img">
+                  <img src={`${base}images/${entry.data.image}`} alt={entry.data.title} loading="lazy" />
+                  <div class="entry-img-overlay"></div>
+                </div>
+              )}
+              <div class="entry-info">
+                <h3>{entry.data.title}</h3>
+                <span class="entry-arrow">&rarr;</span>
+              </div>
             </a>
           ))}
         </div>
@@ -29,52 +37,119 @@ const categories = [...new Set(entries.map(e => e.data.category))];
   </div>
 </BaseLayout>
 
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+
 <style>
   .world-page {
     padding: 3rem 1.5rem 4rem;
-    max-width: 900px;
+    max-width: 1000px;
   }
   .world-desc {
     color: var(--text-muted);
-    margin: 0.5rem 0 2rem;
+    margin: 0.5rem 0 2.5rem;
+    font-style: italic;
   }
   .cat-section {
-    margin-bottom: 2.5rem;
+    margin-bottom: 3rem;
   }
-  .cat-section h2 {
+  .cat-title {
     color: var(--gold);
-    font-size: 1.1rem;
-    margin-bottom: 1rem;
+    font-size: 1rem;
+    letter-spacing: 0.1em;
+    margin-bottom: 1.2rem;
+    position: relative;
+    padding-left: 1rem;
+  }
+  .cat-title::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 1em;
+    background: var(--gold-dim);
+    border-radius: 2px;
   }
   .entry-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
   }
   .entry-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+  }
+  .entry-card:hover {
+    transform: translateY(-4px);
+    border-color: var(--gold-dim);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+  }
+  .entry-img {
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    position: relative;
+    background: var(--navy-light);
+  }
+  .entry-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .entry-card:hover .entry-img img {
+    transform: scale(1.05);
+  }
+  .entry-img-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, var(--bg-card) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  .entry-info {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 1rem 1.2rem;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    transition: border-color 0.2s;
+  }
+  .entry-info h3 {
+    font-size: 1.05rem;
+    font-weight: 600;
     color: var(--text-heading);
+    transition: color 0.2s;
   }
-  .entry-card:hover {
-    border-color: var(--gold-dim);
+  .entry-card:hover .entry-info h3 {
     color: var(--gold);
-  }
-  .entry-card h3 {
-    font-size: 1rem;
-    font-weight: 500;
   }
   .entry-arrow {
     color: var(--text-muted);
-    transition: color 0.2s;
+    font-size: 1.1rem;
+    transition: color 0.3s, transform 0.3s;
   }
   .entry-card:hover .entry-arrow {
     color: var(--gold);
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 600px) {
+    .entry-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
