@@ -3,6 +3,8 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { getCollection } from 'astro:content';
 
 const allChapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+const mainChapters = allChapters.filter(ch => !ch.id.includes('extra'));
+const extraChapters = allChapters.filter(ch => ch.id.includes('extra'));
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -15,7 +17,7 @@ const base = import.meta.env.BASE_URL;
       <h2>第一卷 · 空白海域</h2>
       <p class="vol-desc">他们驶过了海图的边缘。在那片空白里，海水开始修正一切。</p>
       <ol class="chapter-list">
-        {allChapters.map(ch => (
+        {mainChapters.map(ch => (
           <li>
             <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
               <span class="ch-num">第{String(ch.data.chapter).padStart(2, '0')}章</span>
@@ -24,8 +26,25 @@ const base = import.meta.env.BASE_URL;
           </li>
         ))}
       </ol>
-      <p class="coming-soon">第二卷即将上线。</p>
     </section>
+
+    {extraChapters.length > 0 && (
+    <section class="vol-section extra-section">
+      <h2>番外 · 第一卷</h2>
+      <p class="vol-desc">正文之外的片段。同一艘船，不同的视角。</p>
+      <ol class="chapter-list">
+        {extraChapters.map(ch => (
+          <li>
+            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
+              <span class="ch-title">{ch.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+    )}
+
+    <p class="coming-soon">第二卷即将上线。</p>
   </div>
 </BaseLayout>
 
@@ -70,6 +89,11 @@ const base = import.meta.env.BASE_URL;
   }
   .ch-title {
     font-size: 1rem;
+  }
+  .extra-section {
+    margin-top: 2.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border);
   }
   .coming-soon {
     color: var(--text-muted);
