@@ -14,9 +14,24 @@ interface Props {
 const { title, volume, chapter, prevSlug, nextSlug, prevTitle, nextTitle } = Astro.props;
 const base = import.meta.env.BASE_URL;
 const volName = volume === 1 ? '空白海域' : '铁锚风暴';
+const chapterDesc = `《海图之外》第${volume}卷「${volName}」第${String(chapter).padStart(2, '0')}章：${title} — 航海奇幻长篇连载`;
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "Chapter",
+  "name": `第${String(chapter).padStart(2, '0')}章 ${title}`,
+  "isPartOf": {
+    "@type": "Book",
+    "name": "海图之外",
+    "author": { "@type": "Person", "name": "齐瀚维" },
+    "inLanguage": "zh-CN",
+    "genre": "奇幻小说"
+  },
+  "position": chapter
+});
 ---
 
-<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`} enableBgm={false}>
+<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`} description={chapterDesc} enableBgm={false}>
+  <script type="application/ld+json" set:html={jsonLd} />
   <article class="chapter-page container">
     <header class="chapter-header">
       <a href={`${base}story/`} class="back-link">&larr; 返回目录</a>
