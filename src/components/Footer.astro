@@ -8,6 +8,10 @@ const year = new Date().getFullYear();
       <span class="footer-title">海图之外</span>
       <span class="footer-sub">BEYOND THE CHART</span>
     </div>
+    <div class="footer-links">
+      <a href="https://www.xiaohongshu.com/user/profile/65426be0000000000d0068f9" target="_blank" rel="noopener">小红书</a>
+      <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">豆瓣阅读</a>
+    </div>
     <p class="footer-copy">&copy; {year} 海图之外. 版权所有.</p>
   </div>
 </footer>
@@ -36,6 +40,19 @@ const year = new Date().getFullYear();
     color: var(--text-muted);
     font-size: 0.75rem;
     letter-spacing: 0.15em;
+  }
+  .footer-links {
+    display: flex;
+    gap: 1.2rem;
+  }
+  .footer-links a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+  .footer-links a:hover {
+    color: var(--gold);
   }
   .footer-copy {
     color: var(--text-muted);

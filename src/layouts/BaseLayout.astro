@@ -11,7 +11,7 @@ interface Props {
   ogImage?: string;
 }
 
-const { title, description = '航海奇幻长篇连载 — 敬畏·向往·孤独·求知', enableBgm = true, ogImage } = Astro.props;
+const { title, description = '航海奇幻长篇连载 — 探索未知，带着体温闯进去', enableBgm = true, ogImage } = Astro.props;
 const siteTitle = `${title} | 海图之外`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = ogImage ? new URL(ogImage, Astro.site).href : new URL('/og-default.jpg', Astro.site).href;

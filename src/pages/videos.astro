@@ -1,6 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import VideoEmbed from '../components/VideoEmbed.astro';
+import VideoLocal from '../components/VideoLocal.astro';
 ---
 
 <BaseLayout title="视频">
@@ -10,11 +10,9 @@ import VideoEmbed from '../components/VideoEmbed.astro';
     <p class="videos-desc">概念影像与幕后制作。</p>
 
     <div class="video-grid">
-      <VideoEmbed bvid="PLACEHOLDER_1" title="海图之外 · 概念片" />
-      <VideoEmbed bvid="PLACEHOLDER_2" title="这只猫不是宠物" />
+      <VideoLocal src="/videos/海图之外_概念片.mp4" title="海图之外 · 概念片" />
+      <VideoLocal src="/videos/海图之外_这只猫不是宠物.mp4" title="这只猫不是宠物" />
     </div>
-
-    <p class="videos-note">视频上传B站后，替换此处的BV号即可嵌入播放。</p>
   </div>
 </BaseLayout>
 
@@ -31,12 +29,6 @@ import VideoEmbed from '../components/VideoEmbed.astro';
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     gap: 1.5rem;
-  }
-  .videos-note {
-    text-align: center;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    margin-top: 2rem;
   }
   @media (max-width: 640px) {
     .video-grid {
