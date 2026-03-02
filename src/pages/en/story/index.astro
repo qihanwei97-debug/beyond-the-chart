@@ -10,6 +10,14 @@ const t = useTranslations(lang);
 const allChapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
 const mainChapters = allChapters.filter(ch => !ch.id.includes('extra'));
 const extraChapters = allChapters.filter(ch => ch.id.includes('extra'));
+
+// Check which chapters have English translations
+let translatedIds = new Set<string>();
+try {
+  const enChapters = await getCollection('chapters-en');
+  translatedIds = new Set(enChapters.map(ch => ch.id.replace(/\.md$/, '')));
+} catch { /* collection empty or not found */ }
+
 const base = import.meta.env.BASE_URL;
 ---
 
@@ -26,14 +34,26 @@ const base = import.meta.env.BASE_URL;
       <h2>{t('story.vol1')}</h2>
       <p class="vol-desc">{t('story.vol1.desc')}</p>
       <ol class="chapter-list">
-        {mainChapters.map(ch => (
-          <li>
-            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
-              <span class="ch-num">Ch {String(ch.data.chapter).padStart(2, '0')}</span>
-              <span class="ch-title">{chapterTitlesEn[ch.data.chapter] ?? ch.data.title}</span>
-            </a>
-          </li>
-        ))}
+        {mainChapters.map(ch => {
+          const slug = ch.id.replace(/\.md$/, '');
+          const hasEn = translatedIds.has(slug);
+          return (
+            <li>
+              {hasEn ? (
+                <a href={`${base}en/story/${slug}/`}>
+                  <span class="ch-num">Ch {String(ch.data.chapter).padStart(2, '0')}</span>
+                  <span class="ch-title">{chapterTitlesEn[ch.data.chapter] ?? ch.data.title}</span>
+                </a>
+              ) : (
+                <span class="ch-locked">
+                  <span class="ch-num">Ch {String(ch.data.chapter).padStart(2, '0')}</span>
+                  <span class="ch-title">{chapterTitlesEn[ch.data.chapter] ?? ch.data.title}</span>
+                  <span class="ch-badge">Coming</span>
+                </span>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </section>
 
@@ -42,13 +62,24 @@ const base = import.meta.env.BASE_URL;
       <h2>{t('story.extras')}</h2>
       <p class="vol-desc">{t('story.extras.desc')}</p>
       <ol class="chapter-list">
-        {extraChapters.map(ch => (
-          <li>
-            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
-              <span class="ch-title">{ch.data.title}</span>
-            </a>
-          </li>
-        ))}
+        {extraChapters.map(ch => {
+          const slug = ch.id.replace(/\.md$/, '');
+          const hasEn = translatedIds.has(slug);
+          return (
+            <li>
+              {hasEn ? (
+                <a href={`${base}en/story/${slug}/`}>
+                  <span class="ch-title">{ch.data.title}</span>
+                </a>
+              ) : (
+                <span class="ch-locked">
+                  <span class="ch-title">{ch.data.title}</span>
+                  <span class="ch-badge">Coming</span>
+                </span>
+              )}
+            </li>
+          );
+        })}
       </ol>
     </section>
     )}
@@ -67,8 +98,10 @@ const base = import.meta.env.BASE_URL;
   .chapter-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
   .chapter-list a { display: flex; gap: 1rem; padding: 0.7rem 1rem; border-radius: 4px; transition: background 0.15s; color: var(--text); }
   .chapter-list a:hover { background: var(--navy-lighter); color: var(--text-heading); }
-  .ch-num { color: var(--text-muted); min-width: 3.5em; font-size: 0.9rem; }
+  .ch-locked { display: flex; gap: 1rem; padding: 0.7rem 1rem; border-radius: 4px; color: var(--text-muted); opacity: 0.5; align-items: center; }
+  .ch-num { min-width: 3.5em; font-size: 0.9rem; }
   .ch-title { font-size: 1rem; }
+  .ch-badge { font-size: 0.7rem; padding: 0.15rem 0.5rem; border: 1px solid var(--border); border-radius: 3px; margin-left: auto; letter-spacing: 0.05em; }
   .extra-section { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
   .coming-soon { color: var(--text-muted); font-size: 0.9rem; margin-top: 2rem; padding: 1rem; border: 1px dashed var(--border); border-radius: 6px; text-align: center; }
 </style>

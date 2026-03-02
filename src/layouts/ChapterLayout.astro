@@ -1,5 +1,6 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import type { Lang } from '../i18n/ui';
 
 interface Props {
   title: string;
@@ -9,51 +10,62 @@ interface Props {
   nextSlug?: string;
   prevTitle?: string;
   nextTitle?: string;
+  lang?: Lang;
 }
 
-const { title, volume, chapter, prevSlug, nextSlug, prevTitle, nextTitle } = Astro.props;
+const { title, volume, chapter, prevSlug, nextSlug, prevTitle, nextTitle, lang = 'zh' } = Astro.props;
 const base = import.meta.env.BASE_URL;
-const volName = volume === 1 ? '空白海域' : '铁锚风暴';
-const chapterDesc = `《海图之外》第${volume}卷「${volName}」第${String(chapter).padStart(2, '0')}章：${title} — 航海奇幻长篇连载`;
+const isEn = lang === 'en';
+const volName = isEn
+  ? (volume === 1 ? 'The Blank Sea' : 'The Anchor Storm')
+  : (volume === 1 ? '空白海域' : '铁锚风暴');
+const storyBase = isEn ? `${base}en/story` : `${base}story`;
+const chNum = String(chapter).padStart(2, '0');
+
+const chapterDesc = isEn
+  ? `Beyond the Chart — Vol. ${volume} "${volName}" Ch ${chNum}: ${title}`
+  : `《海图之外》第${volume}卷「${volName}」第${chNum}章：${title} — 航海奇幻长篇连载`;
 const jsonLd = JSON.stringify({
   "@context": "https://schema.org",
   "@type": "Chapter",
-  "name": `第${String(chapter).padStart(2, '0')}章 ${title}`,
+  "name": isEn ? `Ch ${chNum} ${title}` : `第${chNum}章 ${title}`,
   "isPartOf": {
     "@type": "Book",
-    "name": "海图之外",
+    "name": isEn ? "Beyond the Chart" : "海图之外",
     "author": { "@type": "Person", "name": "齐瀚维" },
-    "inLanguage": "zh-CN",
-    "genre": "奇幻小说"
+    "inLanguage": isEn ? "en" : "zh-CN",
+    "genre": isEn ? "Fantasy" : "奇幻小说"
   },
   "position": chapter
 });
+
+const layoutTitle = isEn ? `Ch ${chNum} ${title}` : `第${chNum}章 ${title}`;
 ---
 
-<BaseLayout title={`第${String(chapter).padStart(2, '0')}章 ${title}`} description={chapterDesc} enableBgm={false}>
+<BaseLayout title={layoutTitle} description={chapterDesc} enableBgm={false} lang={lang}>
   <script type="application/ld+json" set:html={jsonLd} />
   <article class="chapter-page container">
     <header class="chapter-header">
-      <a href={`${base}story/`} class="back-link">&larr; 返回目录</a>
-      <p class="chapter-vol">第{volume}卷 · {volName}</p>
-      <h1>第{String(chapter).padStart(2, '0')}章 {title}</h1>
+      <a href={`${storyBase}/`} class="back-link">&larr; {isEn ? 'Table of Contents' : '返回目录'}</a>
+      <p class="chapter-vol">{isEn ? `Vol. ${volume}` : `第${volume}卷`} · {volName}</p>
+      <h1>{isEn ? `Ch ${chNum}` : `第${chNum}章`} {title}</h1>
       <div class="gold-line"></div>
     </header>
 
-    <div class="chapter-body">
+    <div class={`chapter-body${isEn ? ' chapter-body--en' : ''}`}>
       <slot />
     </div>
 
     <nav class="chapter-nav">
       {prevSlug ? (
-        <a href={`${base}story/${prevSlug}/`} class="nav-prev">
-          <span class="nav-label">&larr; 上一章</span>
+        <a href={`${storyBase}/${prevSlug}/`} class="nav-prev">
+          <span class="nav-label">&larr; {isEn ? 'Previous' : '上一章'}</span>
           <span class="nav-title">{prevTitle}</span>
         </a>
       ) : <div />}
       {nextSlug ? (
-        <a href={`${base}story/${nextSlug}/`} class="nav-next">
-          <span class="nav-label">下一章 &rarr;</span>
+        <a href={`${storyBase}/${nextSlug}/`} class="nav-next">
+          <span class="nav-label">{isEn ? 'Next' : '下一章'} &rarr;</span>
           <span class="nav-title">{nextTitle}</span>
         </a>
       ) : <div />}
@@ -135,6 +147,10 @@ const jsonLd = JSON.stringify({
     font-size: 0.95rem;
     color: var(--text-heading);
     margin-top: 0.2rem;
+  }
+  .chapter-body--en :global(p) {
+    text-indent: 0;
+    margin-bottom: 1.2em;
   }
   @media (max-width: 768px) {
     .chapter-body { font-size: 1rem; line-height: 1.85; }
