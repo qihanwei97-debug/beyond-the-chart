@@ -1,0 +1,119 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HeroSection from '../../components/HeroSection.astro';
+import CharacterCard from '../../components/CharacterCard.astro';
+import { useTranslations } from '../../i18n/utils';
+import { charactersEn } from '../../i18n/content-en';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const featured = Object.entries(charactersEn)
+  .sort(([, a], [, b]) => a.order - b.order)
+  .slice(0, 4);
+---
+
+<BaseLayout title="Home" lang={lang}>
+  <HeroSection lang={lang} />
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
+    <h2>{t('home.crew')}</h2>
+    <div class="gold-line"></div>
+    <p class="section-desc">{t('home.crew.desc')}</p>
+    <div class="char-grid">
+      {featured.map(([id, c]) => (
+        <CharacterCard
+          id={id}
+          name={c.name}
+          role={c.role}
+          color={c.color}
+          image={c.image}
+          brief={c.brief}
+          lang={lang}
+        />
+      ))}
+    </div>
+    <div class="view-all">
+      <a href="/en/characters/" class="btn-outline">{t('home.crew.all')}</a>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
+    <h2>{t('home.read')}</h2>
+    <div class="gold-line"></div>
+    <div class="vol-cards">
+      <a href="/en/story/" class="vol-card">
+        <span class="vol-num">{t('home.vol1.num')}</span>
+        <span class="vol-name">{t('home.vol1.name')}</span>
+        <span class="vol-info">{t('home.vol1.info')}</span>
+        <span class="vol-arrow">&rarr;</span>
+      </a>
+      <div class="vol-card vol-card--coming">
+        <span class="vol-num">{t('home.vol2.num')}</span>
+        <span class="vol-name">{t('home.vol2.name')}</span>
+        <span class="vol-info">{t('home.vol2.info')}</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal">
+    <h2>{t('home.explore')}</h2>
+    <div class="gold-line"></div>
+    <p class="section-desc">{t('home.explore.desc')}</p>
+    <div class="explore-links">
+      <a href="/en/world/" class="explore-card">
+        <span class="explore-icon">&#9875;</span>
+        <span class="explore-label">{t('home.explore.world')}</span>
+      </a>
+      <a href="/en/videos/" class="explore-card">
+        <span class="explore-icon">&#127916;</span>
+        <span class="explore-label">{t('home.explore.videos')}</span>
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .section { padding: 4rem 1.5rem; }
+  .section-desc { color: var(--text-muted); margin-top: 0.5rem; margin-bottom: 2rem; font-style: italic; }
+  .char-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; }
+  .view-all { text-align: center; margin-top: 2rem; }
+  .btn-outline { display: inline-block; padding: 0.6rem 2rem; border: 1px solid var(--gold-dim); border-radius: 4px; color: var(--gold); font-size: 0.9rem; transition: background 0.3s, color 0.3s, transform 0.2s, box-shadow 0.3s; }
+  .btn-outline:hover { background: var(--gold); color: var(--bg); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200, 164, 92, 0.2); }
+  .vol-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem; margin-top: 1.5rem; }
+  .vol-card { display: flex; flex-direction: column; padding: 2rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; position: relative; overflow: hidden; }
+  .vol-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, var(--gold-dim), transparent); opacity: 0; transition: opacity 0.3s; }
+  .vol-card:hover::before { opacity: 1; }
+  .vol-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); }
+  .vol-card--coming { opacity: 0.5; border-style: dashed; cursor: default; }
+  .vol-card--coming:hover { border-color: var(--border); transform: none; box-shadow: none; }
+  .vol-card--coming:hover::before { opacity: 0; }
+  .vol-num { font-size: 0.8rem; color: var(--gold-dim); letter-spacing: 0.1em; }
+  .vol-name { font-size: 1.4rem; color: var(--text-heading); font-weight: 600; margin-top: 0.3rem; }
+  .vol-info { font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem; }
+  .vol-arrow { position: absolute; right: 1.5rem; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--gold-dim); opacity: 0; transition: opacity 0.3s, transform 0.3s; }
+  .vol-card:hover .vol-arrow { opacity: 1; transform: translateY(-50%) translateX(4px); }
+  .explore-links { display: flex; gap: 1.5rem; margin-top: 1.5rem; flex-wrap: wrap; }
+  .explore-card { flex: 1; min-width: 140px; display: flex; flex-direction: column; align-items: center; gap: 0.8rem; padding: 2rem 1.5rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s; }
+  .explore-card:hover { border-color: var(--gold-dim); transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3); }
+  .explore-icon { font-size: 2rem; filter: grayscale(0.5); transition: filter 0.3s; }
+  .explore-card:hover .explore-icon { filter: grayscale(0); }
+  .explore-label { color: var(--text-heading); font-size: 1rem; font-weight: 600; }
+</style>

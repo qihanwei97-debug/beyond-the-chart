@@ -1,24 +1,43 @@
 ---
+import type { Lang } from '../i18n/ui';
+import { useTranslations, getLocalePath } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const t = useTranslations(lang);
 const base = import.meta.env.BASE_URL;
+
 const navItems = [
-  { label: '正文', href: `${base}story/` },
-  { label: '角色', href: `${base}characters/` },
-  { label: '世界观', href: `${base}world/` },
-  { label: '视频', href: `${base}videos/` },
-  { label: '关于', href: `${base}about/` },
+  { label: t('nav.story'), href: getLocalePath(`${base}story/`, lang) },
+  { label: t('nav.characters'), href: getLocalePath(`${base}characters/`, lang) },
+  { label: t('nav.world'), href: getLocalePath(`${base}world/`, lang) },
+  { label: t('nav.videos'), href: getLocalePath(`${base}videos/`, lang) },
+  { label: t('nav.about'), href: getLocalePath(`${base}about/`, lang) },
 ];
+
+const switchLang = lang === 'zh' ? 'en' : 'zh';
+const switchLabel = lang === 'zh' ? 'EN' : '中文';
+const switchHref = lang === 'zh'
+  ? `/en${Astro.url.pathname}`
+  : Astro.url.pathname.replace(/^\/en/, '') || '/';
 ---
 
 <nav class="navbar">
   <div class="nav-inner container">
-    <a class="nav-brand" href={base}>海图之外</a>
-    <button class="nav-toggle" aria-label="菜单" id="nav-toggle">
+    <a class="nav-brand" href={getLocalePath(base, lang)}>{t('nav.brand')}</a>
+    <button class="nav-toggle" aria-label={t('nav.menu')} id="nav-toggle">
       <span></span><span></span><span></span>
     </button>
     <ul class="nav-links" id="nav-links">
       {navItems.map(item => (
         <li><a href={item.href}>{item.label}</a></li>
       ))}
+      <li class="lang-switch">
+        <a href={switchHref} class="lang-btn">{switchLabel}</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -48,6 +67,7 @@ const navItems = [
     display: flex;
     list-style: none;
     gap: 2rem;
+    align-items: center;
   }
   .nav-links a {
     color: var(--text-muted);
@@ -56,6 +76,20 @@ const navItems = [
   }
   .nav-links a:hover {
     color: var(--gold);
+  }
+  .lang-btn {
+    display: inline-block;
+    padding: 0.25rem 0.6rem;
+    border: 1px solid var(--gold-dim);
+    border-radius: 3px;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+    color: var(--gold-dim) !important;
+    transition: background 0.2s, color 0.2s;
+  }
+  .lang-btn:hover {
+    background: var(--gold);
+    color: var(--navy) !important;
   }
   .nav-toggle {
     display: none;

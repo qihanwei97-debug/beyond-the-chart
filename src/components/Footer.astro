@@ -1,18 +1,36 @@
 ---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang?: Lang;
+}
+
+const { lang = 'zh' } = Astro.props;
+const t = useTranslations(lang);
 const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
   <div class="container footer-inner">
     <div class="footer-brand">
-      <span class="footer-title">海图之外</span>
-      <span class="footer-sub">BEYOND THE CHART</span>
+      <span class="footer-title">{t('footer.brand')}</span>
+      <span class="footer-sub">{t('footer.sub')}</span>
     </div>
     <div class="footer-links">
-      <a href="https://www.xiaohongshu.com/user/profile/65426be0000000000d0068f9" target="_blank" rel="noopener">小红书</a>
-      <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">豆瓣阅读</a>
+      {lang === 'zh' ? (
+        <>
+          <a href="https://www.xiaohongshu.com/user/profile/65426be0000000000d0068f9" target="_blank" rel="noopener">{t('footer.xiaohongshu')}</a>
+          <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">{t('footer.douban')}</a>
+        </>
+      ) : (
+        <>
+          <a href="https://x.com/BeyondTheChart_" target="_blank" rel="noopener">Twitter</a>
+          <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">{t('footer.douban')}</a>
+        </>
+      )}
     </div>
-    <p class="footer-copy">&copy; {year} 海图之外. 版权所有.</p>
+    <p class="footer-copy">&copy; {year} {t('footer.copy')}</p>
   </div>
 </footer>
 

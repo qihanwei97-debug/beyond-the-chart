@@ -1,0 +1,52 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { charactersEn } from '../../../i18n/content-en';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const base = import.meta.env.BASE_URL;
+
+export function getStaticPaths() {
+  return Object.entries(charactersEn).map(([id, data]) => ({
+    params: { id },
+    props: { id, char: data },
+  }));
+}
+
+const { id, char } = Astro.props;
+---
+
+<BaseLayout title={char.name} lang={lang}>
+  <div class="container char-detail">
+    <a href="/en/characters/" class="back-link">{t('chars.back')}</a>
+
+    <header class="char-header" style={`--accent: ${char.color}`}>
+      {char.image ? (
+        <img src={`${base}images/characters/${char.image}`} alt={char.name} class="char-portrait" />
+      ) : (
+        <div class="char-portrait-placeholder">{char.name[0]}</div>
+      )}
+      <div>
+        <h1>{char.name}</h1>
+        <p class="char-role">{char.role}</p>
+        <div class="gold-line"></div>
+      </div>
+    </header>
+
+    <div class="char-content" set:html={char.body.replace(/^## .+\n/, '').replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>')} />
+  </div>
+</BaseLayout>
+
+<style>
+  .char-detail { max-width: var(--content-width); padding: 2rem 1.5rem 4rem; }
+  .back-link { font-size: 0.85rem; color: var(--text-muted); }
+  .char-header { display: flex; gap: 2rem; align-items: center; margin: 2rem 0; }
+  .char-portrait { width: 160px; height: 200px; object-fit: cover; border-radius: 8px; border: 2px solid var(--accent); }
+  .char-portrait-placeholder { width: 160px; height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; color: var(--accent); background: var(--bg-card); border-radius: 8px; border: 2px solid var(--accent); opacity: 0.5; font-weight: 700; }
+  .char-role { color: var(--accent); font-size: 0.95rem; margin-top: 0.3rem; }
+  .char-content { line-height: 1.8; }
+  .char-content :global(p) { margin-bottom: 0.8em; }
+  .char-content :global(strong) { color: var(--text-heading); }
+  @media (max-width: 640px) { .char-header { flex-direction: column; text-align: center; } }
+</style>

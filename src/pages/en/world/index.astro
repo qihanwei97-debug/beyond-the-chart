@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { useTranslations } from '../../../i18n/utils';
+import { worldEn } from '../../../i18n/content-en';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+const base = import.meta.env.BASE_URL;
+
+const entries = Object.entries(worldEn).sort(([, a], [, b]) => a.order - b.order);
+const categories = [...new Set(entries.map(([, e]) => e.category))];
+---
+
+<BaseLayout title={t('world.title')} lang={lang}>
+  <div class="container world-page scroll-reveal">
+    <h1>{t('world.title')}</h1>
+    <div class="gold-line"></div>
+    <p class="world-desc">{t('world.desc')}</p>
+
+    {categories.map(cat => (
+      <section class="cat-section">
+        <h2 class="cat-title">{cat}</h2>
+        <div class="entry-grid">
+          {entries.filter(([, e]) => e.category === cat).map(([id, entry]) => (
+            <div class="entry-card" id={id}>
+              {entry.image && (
+                <div class="entry-img">
+                  <img src={`${base}images/${entry.image}`} alt={entry.title} loading="lazy" />
+                  <div class="entry-img-overlay"></div>
+                </div>
+              )}
+              <div class="entry-info">
+                <h3>{entry.title}</h3>
+              </div>
+              <div class="entry-body" set:html={entry.body.replace(/## .+\n/g, '<h4>$&</h4>').replace(/## /g, '').replace(/<h4>## (.+)\n<\/h4>/g, '<h4>$1</h4>').replace(/\*(.+?)\*/g, '<em>$1</em>').replace(/\n\n/g, '</p><p>').replace(/^/, '<p>').replace(/$/, '</p>')} />
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</BaseLayout>
+
+<script>
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .world-page { padding: 3rem 1.5rem 4rem; max-width: 1000px; }
+  .world-desc { color: var(--text-muted); margin: 0.5rem 0 2.5rem; font-style: italic; }
+  .cat-section { margin-bottom: 3rem; }
+  .cat-title { color: var(--gold); font-size: 1rem; letter-spacing: 0.1em; margin-bottom: 1.2rem; position: relative; padding-left: 1rem; }
+  .cat-title::before { content: ''; position: absolute; left: 0; top: 50%; transform: translateY(-50%); width: 3px; height: 1em; background: var(--gold-dim); border-radius: 2px; }
+  .entry-grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+  .entry-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .entry-img { aspect-ratio: 21/9; overflow: hidden; position: relative; background: var(--navy-light); }
+  .entry-img img { width: 100%; height: 100%; object-fit: cover; }
+  .entry-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, var(--bg-card) 0%, transparent 50%); pointer-events: none; }
+  .entry-info { padding: 1rem 1.5rem 0; }
+  .entry-info h3 { font-size: 1.2rem; font-weight: 600; color: var(--gold); }
+  .entry-body { padding: 0.5rem 1.5rem 1.5rem; line-height: 1.8; color: var(--text); }
+  .entry-body :global(h4) { color: var(--text-heading); font-size: 1rem; margin: 1.5rem 0 0.5rem; }
+  .entry-body :global(p) { margin-bottom: 0.6em; }
+  .entry-body :global(em) { color: var(--gold-dim); font-style: italic; }
+  @media (max-width: 600px) { .entry-grid { grid-template-columns: 1fr; } }
+</style>

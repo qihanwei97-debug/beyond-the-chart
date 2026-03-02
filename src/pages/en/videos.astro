@@ -1,0 +1,28 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import VideoLocal from '../../components/VideoLocal.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('videos.title')} lang={lang}>
+  <div class="container videos-page">
+    <h1>{t('videos.title')}</h1>
+    <div class="gold-line"></div>
+    <p class="videos-desc">{t('videos.desc')}</p>
+
+    <div class="video-grid">
+      <VideoLocal src="/videos/海图之外_概念片_web.mp4" title="Beyond the Chart · Concept Film" />
+      <VideoLocal src="/videos/海图之外_这只猫不是宠物_web.mp4" title="This Cat Is Not a Pet" />
+    </div>
+  </div>
+</BaseLayout>
+
+<style>
+  .videos-page { padding: 3rem 1.5rem 4rem; max-width: 900px; }
+  .videos-desc { color: var(--text-muted); margin: 0.5rem 0 2rem; }
+  .video-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(400px, 1fr)); gap: 1.5rem; }
+  @media (max-width: 640px) { .video-grid { grid-template-columns: 1fr; } }
+</style>

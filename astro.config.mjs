@@ -7,4 +7,11 @@ export default defineConfig({
   base: '/',
   output: 'static',
   integrations: [sitemap()],
+  i18n: {
+    defaultLocale: 'zh',
+    locales: ['zh', 'en'],
+    routing: {
+      prefixDefaultLocale: false,
+    },
+  },
 });

@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const lang = 'en' as const;
+---
+
+<BaseLayout title="About" lang={lang}>
+  <div class="container about-page">
+    <h1>About <em>Beyond the Chart</em></h1>
+    <div class="gold-line"></div>
+
+    <section class="about-section">
+      <h2>The Story</h2>
+      <p>This is a story about sailing into the unknown.</p>
+      <p>In this world, charts have edges. Beyond the edges lies blank space — not unexplored, but explored by people who never came back. Kael and the crew of the Grey Gull chose to sail into that blank. They discovered that where chart markings end, the sea begins operating by a different set of rules.</p>
+      <p>Seven anomalous seas. Seven ways reality can be twisted. The Equalizing Sea erases all difference. The Fracture Sea shatters space. The Gyre disrupts time... Each sea is a test of what it means to be human.</p>
+    </section>
+
+    <section class="about-section">
+      <h2>Tone</h2>
+      <div class="tone-grid">
+        <div class="tone-item">
+          <span class="tone-word">The World</span>
+          <p>Vast. Unknown. Cold. Where the chart markings end, the sea operates by rules no one understands. No one knows what those rules are, or where the boundaries lie.</p>
+        </div>
+        <div class="tone-item">
+          <span class="tone-word">The Narrative</span>
+          <p>Warm. Exploration-driven. Tightly paced. The world is cold, but the people on the ship are not. They argue, make mistakes, protect each other, and keep sailing forward.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="about-section">
+      <h2>Structure</h2>
+      <p>A long-form serial with multiple volumes. Each volume corresponds to one anomalous sea — one test of human nature.</p>
+      <ul class="vol-list">
+        <li><strong>Volume I &middot; The Blank Sea</strong> (22 chapters &middot; complete) — The Grey Gull's first encounter with the edge of the Equalizing Sea</li>
+        <li>More volumes in progress</li>
+      </ul>
+    </section>
+
+    <section class="about-section">
+      <h2>Follow</h2>
+      <div class="social-links">
+        <a href="https://x.com/BeyondTheChart_" target="_blank" rel="noopener">Twitter</a>
+        <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">Douban Read</a>
+      </div>
+      <p>This project is an ongoing creation. If you're interested, you can start from <a href="/en/story/">Volume I</a>.</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .about-page { max-width: var(--content-width); padding: 3rem 1.5rem 4rem; }
+  .about-section { margin-top: 2.5rem; }
+  .about-section h2 { color: var(--gold); font-size: 1.2rem; margin-bottom: 0.8rem; }
+  .about-section p { margin-bottom: 0.8em; line-height: 1.8; }
+  .tone-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+  .tone-item { padding: 1rem; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px; }
+  .tone-word { display: block; color: var(--gold); font-size: 1.1rem; font-weight: 600; margin-bottom: 0.4rem; }
+  .tone-item p { font-size: 0.9rem; color: var(--text-muted); margin: 0; line-height: 1.6; }
+  .vol-list { list-style: none; margin-top: 0.5rem; }
+  .vol-list li { padding: 0.4rem 0 0.4rem 1.2rem; position: relative; }
+  .vol-list li::before { content: '\00B7'; position: absolute; left: 0; color: var(--gold); }
+  .vol-list strong { color: var(--text-heading); }
+  .social-links { display: flex; gap: 1rem; margin-bottom: 1rem; }
+  .social-links a { display: inline-block; padding: 0.5rem 1.2rem; border: 1px solid var(--gold); border-radius: 4px; color: var(--gold); text-decoration: none; font-size: 0.9rem; transition: background 0.2s; }
+  .social-links a:hover { background: var(--gold); color: var(--bg-dark, #0a0e1a); }
+  @media (max-width: 640px) { .tone-grid { grid-template-columns: 1fr; } }
+</style>

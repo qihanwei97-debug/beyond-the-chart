@@ -1,0 +1,74 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations } from '../../../i18n/utils';
+import { chapterTitlesEn } from '../../../i18n/content-en';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+
+const allChapters = (await getCollection('chapters')).sort((a, b) => a.data.order - b.data.order);
+const mainChapters = allChapters.filter(ch => !ch.id.includes('extra'));
+const extraChapters = allChapters.filter(ch => ch.id.includes('extra'));
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title={t('story.title')} lang={lang}>
+  <div class="container story-index">
+    <h1>{t('story.title')}</h1>
+    <div class="gold-line"></div>
+
+    <div class="lang-notice">
+      <p>{t('story.note')}</p>
+    </div>
+
+    <section class="vol-section">
+      <h2>{t('story.vol1')}</h2>
+      <p class="vol-desc">{t('story.vol1.desc')}</p>
+      <ol class="chapter-list">
+        {mainChapters.map(ch => (
+          <li>
+            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
+              <span class="ch-num">Ch {String(ch.data.chapter).padStart(2, '0')}</span>
+              <span class="ch-title">{chapterTitlesEn[ch.data.chapter] ?? ch.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+
+    {extraChapters.length > 0 && (
+    <section class="vol-section extra-section">
+      <h2>{t('story.extras')}</h2>
+      <p class="vol-desc">{t('story.extras.desc')}</p>
+      <ol class="chapter-list">
+        {extraChapters.map(ch => (
+          <li>
+            <a href={`${base}story/${ch.id.replace(/\.md$/, '')}/`}>
+              <span class="ch-title">{ch.data.title}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+    )}
+
+    <p class="coming-soon">{t('story.coming')}</p>
+  </div>
+</BaseLayout>
+
+<style>
+  .story-index { padding: 3rem 1.5rem 4rem; max-width: 800px; }
+  .lang-notice { padding: 1rem 1.2rem; background: rgba(200, 164, 92, 0.08); border: 1px solid var(--gold-dim); border-radius: 6px; margin-bottom: 1rem; }
+  .lang-notice p { color: var(--gold); font-size: 0.9rem; margin: 0; }
+  .vol-section { margin-top: 3rem; }
+  .vol-section h2 { color: var(--gold); }
+  .vol-desc { color: var(--text-muted); font-size: 0.9rem; margin: 0.5rem 0 1.5rem; }
+  .chapter-list { list-style: none; display: flex; flex-direction: column; gap: 0.3rem; }
+  .chapter-list a { display: flex; gap: 1rem; padding: 0.7rem 1rem; border-radius: 4px; transition: background 0.15s; color: var(--text); }
+  .chapter-list a:hover { background: var(--navy-lighter); color: var(--text-heading); }
+  .ch-num { color: var(--text-muted); min-width: 3.5em; font-size: 0.9rem; }
+  .ch-title { font-size: 1rem; }
+  .extra-section { margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .coming-soon { color: var(--text-muted); font-size: 0.9rem; margin-top: 2rem; padding: 1rem; border: 1px dashed var(--border); border-radius: 6px; text-align: center; }
+</style>

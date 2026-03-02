@@ -75,6 +75,16 @@ const base = import.meta.env.BASE_URL;
 </BaseLayout>
 
 <script>
+  // 浏览器语言检测：非中文用户自动跳转英文版
+  (function() {
+    if (sessionStorage.getItem('lang-chosen')) return;
+    const lang = navigator.language || (navigator as any).userLanguage || '';
+    if (!lang.startsWith('zh')) {
+      sessionStorage.setItem('lang-chosen', 'en');
+      window.location.replace('/en/');
+    }
+  })();
+
   // 滚动渐入
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
