@@ -24,7 +24,7 @@ const characters = Object.entries(charactersEn).sort(([, a], [, b]) => a.order -
           <button class="vote-card" data-id={id} data-name={c.name}>
             <div class="vote-avatar" style={`border-color: ${c.color}`}>
               {c.image ? (
-                <img src={`/${c.image}`} alt={c.name} loading="lazy" />
+                <img src={`/images/characters/${c.image}`} alt={c.name} loading="lazy" />
               ) : (
                 <span class="vote-initial" style={`color: ${c.color}`}>{c.name[0]}</span>
               )}

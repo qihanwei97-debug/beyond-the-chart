@@ -22,7 +22,7 @@ const base = import.meta.env.BASE_URL;
           <button class="vote-card" data-id={c.id.replace(/\.md$/, '')} data-name={c.data.name}>
             <div class="vote-avatar" style={`border-color: ${c.data.color}`}>
               {c.data.image ? (
-                <img src={`${base}${c.data.image}`} alt={c.data.name} loading="lazy" />
+                <img src={`${base}images/characters/${c.data.image}`} alt={c.data.name} loading="lazy" />
               ) : (
                 <span class="vote-initial" style={`color: ${c.data.color}`}>{c.data.name[0]}</span>
               )}
