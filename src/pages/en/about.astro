@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
 
 const lang = 'en' as const;
 ---
@@ -46,6 +47,7 @@ const lang = 'en' as const;
         <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">Douban Read</a>
       </div>
       <p>This project is an ongoing creation. If you're interested, you can start from <a href="/en/story/">Volume I</a>.</p>
+      <SubscribeForm lang={lang} compact />
     </section>
   </div>
 </BaseLayout>

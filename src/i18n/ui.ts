@@ -63,6 +63,29 @@ export const ui = {
     // About page
     'about.title': '关于',
 
+    // Interact page
+    'nav.interact': '互动',
+    'interact.title': '互动',
+    'interact.desc': '你的声音，是航海日志的一部分。',
+    'interact.vote': '角色人气投票',
+    'interact.vote.desc': '选出你最喜欢的灰鸥号船员。投票结果将定期公布。',
+    'interact.vote.btn': '参与投票',
+    'interact.feedback': '读者反馈',
+    'interact.feedback.desc': '告诉我们你的阅读体验——喜欢的章节、期待的发展、任何想法都欢迎。',
+    'interact.feedback.btn': '提交反馈',
+    'interact.community': '加入社区',
+    'interact.community.desc': '在这些平台找到我们，和其他读者一起讨论。',
+    'interact.subscribe': '更新订阅',
+    'interact.subscribe.desc': '留下邮箱，第一时间收到新卷上线和重要更新通知。我们不会发送垃圾邮件。',
+
+    // Subscribe form
+    'subscribe.title': '订阅更新',
+    'subscribe.desc': '新卷上线时，第一时间通知你。',
+    'subscribe.placeholder': '你的邮箱地址',
+    'subscribe.btn': '订阅',
+    'subscribe.thanks': '感谢订阅！',
+    'subscribe.privacy': '仅用于更新通知，不会发送垃圾邮件。',
+
     // Footer
     'footer.brand': '海图之外',
     'footer.sub': 'BEYOND THE CHART',
@@ -131,6 +154,29 @@ export const ui = {
 
     // About page
     'about.title': 'About',
+
+    // Interact page
+    'nav.interact': 'Community',
+    'interact.title': 'Community',
+    'interact.desc': 'Your voice is part of the ship\'s log.',
+    'interact.vote': 'Character Poll',
+    'interact.vote.desc': 'Vote for your favorite crew member of the Grey Gull. Results will be shared periodically.',
+    'interact.vote.btn': 'Cast Your Vote',
+    'interact.feedback': 'Reader Feedback',
+    'interact.feedback.desc': 'Tell us about your reading experience — favorite chapters, what you hope to see, any thoughts are welcome.',
+    'interact.feedback.btn': 'Submit Feedback',
+    'interact.community': 'Join the Community',
+    'interact.community.desc': 'Find us on these platforms and discuss with other readers.',
+    'interact.subscribe': 'Stay Updated',
+    'interact.subscribe.desc': 'Leave your email to be notified when new volumes launch and major updates happen. No spam, ever.',
+
+    // Subscribe form
+    'subscribe.title': 'Stay Updated',
+    'subscribe.desc': 'Be the first to know when a new volume launches.',
+    'subscribe.placeholder': 'Your email address',
+    'subscribe.btn': 'Subscribe',
+    'subscribe.thanks': 'Thank you for subscribing!',
+    'subscribe.privacy': 'Used only for update notifications. No spam.',
 
     // Footer
     'footer.brand': 'Beyond the Chart',

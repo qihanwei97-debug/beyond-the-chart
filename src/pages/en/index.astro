@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import HeroSection from '../../components/HeroSection.astro';
 import CharacterCard from '../../components/CharacterCard.astro';
+import SubscribeForm from '../../components/SubscribeForm.astro';
 import { useTranslations } from '../../i18n/utils';
 import { charactersEn } from '../../i18n/content-en';
 
@@ -75,6 +76,12 @@ const featured = Object.entries(charactersEn)
         <span class="explore-label">{t('home.explore.videos')}</span>
       </a>
     </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal subscribe-section">
+    <SubscribeForm lang={lang} />
   </section>
 </BaseLayout>
 

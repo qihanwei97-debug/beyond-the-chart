@@ -1,0 +1,325 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SubscribeForm from '../components/SubscribeForm.astro';
+import { getCollection } from 'astro:content';
+
+const characters = (await getCollection('characters')).sort((a, b) => a.data.order - b.data.order);
+const base = import.meta.env.BASE_URL;
+---
+
+<BaseLayout title="互动">
+  <div class="container interact-page">
+    <h1>互动</h1>
+    <div class="gold-line"></div>
+    <p class="page-desc">你的声音，是航海日志的一部分。</p>
+
+    <!-- 角色人气投票 -->
+    <section class="interact-section scroll-reveal">
+      <h2>角色人气投票</h2>
+      <p class="section-desc">选出你最喜欢的灰鸥号船员。点击角色卡片即可投票。</p>
+      <div class="vote-grid">
+        {characters.map(c => (
+          <button class="vote-card" data-id={c.id.replace(/\.md$/, '')} data-name={c.data.name}>
+            <div class="vote-avatar" style={`border-color: ${c.data.color}`}>
+              {c.data.image ? (
+                <img src={`${base}${c.data.image}`} alt={c.data.name} loading="lazy" />
+              ) : (
+                <span class="vote-initial" style={`color: ${c.data.color}`}>{c.data.name[0]}</span>
+              )}
+            </div>
+            <span class="vote-name">{c.data.name}</span>
+            <span class="vote-role">{c.data.role}</span>
+            <span class="vote-count">0</span>
+          </button>
+        ))}
+      </div>
+      <p class="vote-hint">* 投票数据保存在浏览器本地，仅供趣味参考。</p>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 读者反馈 -->
+    <section class="interact-section scroll-reveal">
+      <h2>读者反馈</h2>
+      <p class="section-desc">告诉我们你的阅读体验——喜欢的章节、期待的发展、任何想法都欢迎。</p>
+      <div class="feedback-cards">
+        <a href="https://wj.qq.com/s2/25886897/64b2/" target="_blank" rel="noopener" class="feedback-card">
+          <span class="feedback-icon">&#9997;</span>
+          <span class="feedback-label">阅读体验问卷</span>
+          <span class="feedback-hint">3分钟快速问卷</span>
+        </a>
+        <a href="mailto:beyond.the.chart@outlook.com?subject=读者反馈" class="feedback-card">
+          <span class="feedback-icon">&#9993;</span>
+          <span class="feedback-label">邮件反馈</span>
+          <span class="feedback-hint">直接发邮件给作者</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 加入社区 -->
+    <section class="interact-section scroll-reveal">
+      <h2>加入社区</h2>
+      <p class="section-desc">在这些平台找到我们，和其他读者一起讨论。</p>
+      <div class="community-links">
+        <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener" class="community-card">
+          <span class="community-name">豆瓣阅读</span>
+          <span class="community-desc">连载主阵地 · 章节评论</span>
+        </a>
+        <a href="https://www.xiaohongshu.com/user/profile/65426be0000000000d0068f9" target="_blank" rel="noopener" class="community-card">
+          <span class="community-name">小红书</span>
+          <span class="community-desc">视觉内容 · 创作幕后</span>
+        </a>
+      </div>
+    </section>
+
+    <div class="section-divider"></div>
+
+    <!-- 邮件订阅 -->
+    <section class="interact-section scroll-reveal">
+      <h2>更新订阅</h2>
+      <p class="section-desc">留下邮箱，第一时间收到新卷上线和重要更新通知。我们不会发送垃圾邮件。</p>
+      <SubscribeForm compact />
+    </section>
+  </div>
+</BaseLayout>
+
+<script>
+  // 简易本地投票系统
+  const STORAGE_KEY = 'btc-character-votes';
+  const VOTED_KEY = 'btc-voted-characters';
+
+  function getVotes(): Record<string, number> {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch { return {}; }
+  }
+
+  function getVoted(): string[] {
+    try {
+      return JSON.parse(localStorage.getItem(VOTED_KEY) || '[]');
+    } catch { return []; }
+  }
+
+  function saveVotes(votes: Record<string, number>, voted: string[]) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(votes));
+    localStorage.setItem(VOTED_KEY, JSON.stringify(voted));
+  }
+
+  function renderVotes() {
+    const votes = getVotes();
+    const voted = getVoted();
+    document.querySelectorAll<HTMLElement>('.vote-card').forEach(card => {
+      const id = card.dataset.id!;
+      const countEl = card.querySelector('.vote-count')!;
+      countEl.textContent = String(votes[id] || 0);
+      if (voted.includes(id)) {
+        card.classList.add('voted');
+      }
+    });
+  }
+
+  document.querySelectorAll<HTMLElement>('.vote-card').forEach(card => {
+    card.addEventListener('click', () => {
+      const id = card.dataset.id!;
+      const voted = getVoted();
+      const votes = getVotes();
+
+      if (voted.includes(id)) {
+        // 取消投票
+        votes[id] = Math.max(0, (votes[id] || 0) - 1);
+        const idx = voted.indexOf(id);
+        voted.splice(idx, 1);
+        card.classList.remove('voted');
+      } else {
+        // 投票
+        votes[id] = (votes[id] || 0) + 1;
+        voted.push(id);
+        card.classList.add('voted');
+      }
+
+      saveVotes(votes, voted);
+      renderVotes();
+    });
+  });
+
+  renderVotes();
+
+  // 滚动渐入
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('revealed');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
+  document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .interact-page {
+    max-width: var(--content-width);
+    padding: 3rem 1.5rem 4rem;
+  }
+  .page-desc {
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .interact-section {
+    margin-top: 2.5rem;
+  }
+  .interact-section h2 {
+    color: var(--gold);
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+  }
+  .section-desc {
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+  }
+
+  /* 角色投票 */
+  .vote-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 1rem;
+  }
+  .vote-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 1.2rem 0.8rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: border-color 0.3s, transform 0.2s, box-shadow 0.3s;
+    font-family: inherit;
+    color: inherit;
+  }
+  .vote-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  }
+  .vote-card.voted {
+    border-color: var(--gold);
+    background: rgba(200, 164, 92, 0.08);
+  }
+  .vote-avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--navy-light);
+  }
+  .vote-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .vote-initial {
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+  .vote-name {
+    font-size: 0.9rem;
+    color: var(--text-heading);
+    font-weight: 600;
+  }
+  .vote-role {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+  .vote-count {
+    font-size: 0.8rem;
+    color: var(--gold-dim);
+    margin-top: 0.2rem;
+  }
+  .vote-card.voted .vote-count {
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .vote-hint {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 1rem;
+    opacity: 0.6;
+  }
+
+  /* 反馈卡片 */
+  .feedback-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .feedback-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.3s, transform 0.2s;
+    text-decoration: none;
+  }
+  .feedback-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+  .feedback-icon {
+    font-size: 1.8rem;
+  }
+  .feedback-label {
+    color: var(--text-heading);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .feedback-hint {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+  }
+
+  /* 社区链接 */
+  .community-links {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+  .community-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 1.2rem 1.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    transition: border-color 0.3s, transform 0.2s;
+    text-decoration: none;
+  }
+  .community-card:hover {
+    border-color: var(--gold-dim);
+    transform: translateY(-2px);
+  }
+  .community-name {
+    color: var(--text-heading);
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .community-desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+</style>

@@ -2,6 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroSection from '../components/HeroSection.astro';
 import CharacterCard from '../components/CharacterCard.astro';
+import SubscribeForm from '../components/SubscribeForm.astro';
 import { getCollection } from 'astro:content';
 
 const characters = (await getCollection('characters')).sort((a, b) => a.data.order - b.data.order);
@@ -71,6 +72,12 @@ const base = import.meta.env.BASE_URL;
         <span class="explore-label">视频</span>
       </a>
     </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <section class="section container scroll-reveal subscribe-section">
+    <SubscribeForm />
   </section>
 </BaseLayout>
 

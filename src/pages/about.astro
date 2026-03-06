@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SubscribeForm from '../components/SubscribeForm.astro';
 ---
 
 <BaseLayout title="关于">
@@ -44,6 +45,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         <a href="https://read.douban.com/column/73405503/" target="_blank" rel="noopener">豆瓣阅读</a>
       </div>
       <p>这个项目正在持续创作中。如果你感兴趣，可以从<a href={`${import.meta.env.BASE_URL}story/`}>第一章</a>开始阅读。</p>
+      <SubscribeForm compact />
     </section>
   </div>
 </BaseLayout>
